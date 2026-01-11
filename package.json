@@ -1,0 +1,25 @@
+{
+  "name": "starsafe",
+  "version": "1.0.0",
+  "description": "",
+  "main": "bot.js",
+  "scripts": {
+    "dev": "nodemon bot.js",
+    "start": "node bot.js",
+    "register": "node deploy-commands.js dev",
+    "register:global": "node deploy-commands.js global",
+    "unregister": "node deploy-commands.js clear"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "discord.js": "^14.25.1",
+    "dotenv": "^17.2.3",
+    "mongoose": "^9.0.1",
+    "node-cron": "^4.2.1",
+    "node-fetch": "^3.3.2",
+    "nodemon": "^3.1.11"
+  }
+}
