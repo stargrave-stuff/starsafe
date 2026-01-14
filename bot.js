@@ -13,16 +13,32 @@ const client = new Client({ intents: [
 client.commands = new Collection();
 
 // Load slash commands
+function getFilesRecursively(directory) {
+    const filesInDirectory = fs.readdirSync(directory);
+    let files = [];
+
+    for (const file of filesInDirectory) {
+        const absolutePath = path.join(directory, file);
+        if (fs.statSync(absolutePath).isDirectory()) {
+            files = files.concat(getFilesRecursively(absolutePath));
+        } else if (file.endsWith('.js')) {
+            files.push(absolutePath);
+        }
+    }
+    return files;
+}
+
 const commandsPath = path.join(__dirname, 'commands');
-const commandFiles = fs.readdirSync(commandsPath).filter(f => f.endsWith('.js'));
-for (const file of commandFiles) {
-  const filePath = path.join(commandsPath, file);
-  const command = require(filePath);
-  if ('data' in command && 'execute' in command) {
-    client.commands.set(command.data.name, command);
-  } else {
-    console.warn(`[WARN] ${file} is missing "data" or "execute".`);
-  }
+const commandFiles = getFilesRecursively(commandsPath);
+
+for (const filePath of commandFiles) {
+    const command = require(filePath);
+    if ('data' in command && 'execute' in command) {
+        client.commands.set(command.data.name, command);
+        console.log(`[LOADED] Command: ${command.data.name}`);
+    } else {
+        console.log(`[WARNING] The command at ${filePath} is missing "data" or "execute".`);
+    }
 }
 
 const eventsPath = path.join(__dirname, 'events');
